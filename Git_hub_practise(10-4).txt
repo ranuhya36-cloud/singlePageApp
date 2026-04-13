@@ -1,0 +1,46 @@
+1.Clone:
+
+i. open github-->code-->rightside Click Code (green button)-->Copy URL (HTTPS)
+
+> git clone <url>
+
+ex:
+git clone https://github.com/Evofront-Pvt-Ltd/pods-backend-services.git
+
+cd pods-backend-services
+
+
+ii.See all branches
+> git branch -a
+
+2.Push
+
+we can do changes in code ,create new branch and push those changes in new branch.
+
+we can work on new service,create new branch and push those changes in new branch.
+> git status(what changes we made)
+> git branch(currently we are in which branch)
+
+> git pull  (# always update first (IMPORTANT))
+
+to create new branch:                           to delete branch:
+
+>git checkout -b <new-branch-name>             > git branch -d <branch-name>
+
+>git branch(to know in which branch)
+
+> git status
+
+> git add .
+> git commit -m "message"
+> git push origin <branch-name>
+
+3.Pull
+
+
+> git pull
+
+> git checkout <your-branch>(our branch)
+
+> git pull origin <branch-name>(branch-name-->updates code branch, changes made made, from which branch code we need)
+
