@@ -1,0 +1,1670 @@
+You need to run the command from the hi directory:
+
+cd hi
+docker-compose up --build
+
+Quick Start Commands
+Windows (Command Prompt):
+
+
+docker-compose up --build -d
+
+
+---------------------------------------------------------
+I've successfully implemented RabbitMQ integration for the Gamification Leaderboard Service. All subtasks (B-8.1, B-8.2, B-8.3, B-8.4) are complete and the service is now running successfully!
+
+## Summary of Implementation
+
+### Files Created:
+
+#### RabbitMQ Integration Module:
+- [`app/rabbitmq/__init__.py`](hi/gamification-service/app/rabbitmq/__init__.py) - Module initialization
+- [`app/rabbitmq/schemas.py`](hi/gamification-service/app/rabbitmq/schemas.py) - Message schemas (envelope, points awarded, badge earned)
+- [`app/rabbitmq/connection.py`](hi/gamification-service/app/rabbitmq/connection.py) - Connection manager with robust reconnection logic
+- [`app/rabbitmq/consumer.py`](hi/gamification-service/app/rabbitmq/consumer.py) - Event consumers with idempotency handling
+- [`app/rabbitmq/publisher.py`](hi/gamification-service/app/rabbitmq/publisher.py) - Event publishers for gamification events
+
+#### Configuration Updates:
+- [`app/config.py`](hi/gamification-service/app/config.py) - Added RabbitMQ settings
+- [`requirements.txt`](hi/gamification-service/requirements.txt) - Added `aio-pika==9.3.1`
+- [`.env.example`](hi/gamification-service/.env.example) - Added RabbitMQ environment variables
+- [`app/main.py`](hi/gamification-service/app/main.py) - Integrated RabbitMQ consumer startup
+- [`app/services/badges_service.py`](hi/gamification-service/app/services/badges_service.py) - Enhanced `award_badge` method
+
+#### Docker Configuration:
+- [`Dockerfile`](hi/gamification-service/Dockerfile) - Updated to Python 3.11-slim, removed gcc dependency
+- [`docker-compose.yml`](hi/docker-compose.yml) - RabbitMQ configuration
+- [`run_gamification.bat`](hi/run_gamification.bat) - One-click start script with PYTHONPATH fix
+
+#### Documentation:
+- [`RABBITMQ_INTEGRATION.md`](hi/gamification-service/RABBITMQ_INTEGRATION.md) - Complete RabbitMQ integration guide
+- [`DOCKER_SETUP_GUIDE.md`](hi/gamification-service/DOCKER_SETUP_GUIDE.md) - Docker setup instructions
+- [`QUICK_START.md`](hi/QUICK_START.md) - Quick start guide
+
+## Subtasks Completed
+
+| Subtask | Description | Status |
+|----------|-------------|--------|
+| **B-8.1** | Consumer for `events.attendance.verified` (idempotency by registrationId); writes points_transactions, member_points; updates Redis leaderboard | ✅ |
+| **B-8.2** | Consumers for `training.course.completed`, `training.quiz.passed`, `training.module.completed` with idempotency | ✅ |
+| **B-8.3** | Publishes `gamification.points.awarded`, `gamification.badge.earned` when applicable | ✅ |
+| **B-8.4** | GET `/leaderboard` from Redis with MongoDB fallback; badges, streaks APIs | ✅ |
+
+## Current Status
+
+The service is running successfully:
+```
+Starting Gamification Leaderboard API...
+Connecting to MongoDB...
+MongoDB connected successfully!
+Connecting to Redis...
+Redis connected successfully!
+Connecting to RabbitMQ...
+RabbitMQ connected successfully!
+Gamification consumer started!
+API available at: http://localhost:8000/api/v1
+API docs available at: http://localhost:8000/docs
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+```
+
+## Access Points
+
+- **API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/health
+- **RabbitMQ Management**: http://localhost:15672 (guest/guest)
+
+## Next Steps
+
+1. Test the health endpoint: `http://localhost:8000/health`
+2. Check RabbitMQ Management UI for `pods.events` exchange and `gamification.in` queue
+3. Publish a test event with routing key `events.attendance.verified`
+4. Verify the consumer processes the event
+5. Test the API endpoints for points, leaderboard, badges, and streaks
+
+All RabbitMQ integration is complete and ready to use!
+====================================================
+I've successfully implemented RabbitMQ integration for the Gamification Leaderboard Service. All subtasks (B-8.1, B-8.2, B-8.3, B-8.4) are complete and the service is running successfully!
+
+## Summary of Implementation
+
+### Files Created:
+
+#### RabbitMQ Integration Module:
+- [`app/rabbitmq/__init__.py`](hi/gamification-service/app/rabbitmq/__init__.py) - Module initialization
+- [`app/rabbitmq/schemas.py`](hi/gamification-service/app/rabbitmq/schemas.py) - Message schemas (envelope, points awarded, badge earned)
+- [`app/rabbitmq/connection.py`](hi/gamification-service/app/rabbitmq/connection.py) - Connection manager with robust reconnection logic
+- [`app/rabbitmq/consumer.py`](hi/gamification-service/app/rabbitmq/consumer.py) - Event consumers with idempotency handling
+- [`app/rabbitmq/publisher.py`](hi/gamification-service/app/rabbitmq/publisher.py) - Event publishers for gamification events
+
+#### Configuration Updates:
+- [`app/config.py`](hi/gamification-service/app/config.py) - Added RabbitMQ settings
+- [`requirements.txt`](hi/gamification-service/requirements.txt) - Added `aio-pika==9.3.1`
+- [`.env.example`](hi/gamification-service/.env.example) - Added RabbitMQ environment variables
+- [`app/main.py`](hi/gamification-service/app/main.py) - Integrated RabbitMQ consumer startup
+- [`app/services/badges_service.py`](hi/gamification-service/app/services/badges_service.py) - Enhanced `award_badge` method
+- [`Dockerfile`](hi/gamification-service/Dockerfile) - Updated to Python 3.11-slim, removed gcc dependency
+- [`docker-compose.yml`](hi/docker-compose.yml) - RabbitMQ configuration
+- [`run_gamification.bat`](hi/run_gamification.bat) - One-click start script with PYTHONPATH fix
+
+#### Documentation:
+- [`RABBITMQ_INTEGRATION.md`](hi/gamification-service/RABBITMQ_INTEGRATION.md) - Complete RabbitMQ integration guide
+- [`DOCKER_SETUP_GUIDE.md`](hi/gamification-service/DOCKER_SETUP_GUIDE.md) - Docker setup instructions
+- [`QUICK_START.md`](hi/QUICK_START.md) - Quick start guide
+
+## Subtasks Completed
+
+| Subtask | Description | Status |
+|----------|-------------|--------|
+| **B-8.1** | Consumer for `events.attendance.verified` (idempotency by registrationId); writes points_transactions, member_points; updates Redis leaderboard | ✅ |
+| **B-8.2** | Consumers for `training.course.completed`, `training.quiz.passed`, `training.module.completed` with idempotency | ✅ |
+| **B-8.3** | Publishes `gamification.points.awarded`, `gamification.badge.earned` when applicable | ✅ |
+| **B-8.4** | GET `/leaderboard` from Redis with MongoDB fallback; badges, streaks APIs | ✅ |
+
+## Current Status
+
+The service is running successfully:
+```
+Starting Gamification Leaderboard API...
+Connecting to MongoDB...
+MongoDB connected successfully!
+Connecting to Redis...
+Redis connected successfully!
+Connecting to RabbitMQ...
+Successfully connected to RabbitMQ!
+Gamification consumer started!
+API available at: http://localhost:8000/api/v1
+API docs available at: http://localhost:8000/docs
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+```
+
+## Access Points
+
+- **API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/health
+- **RabbitMQ Management**: http://localhost:15672 (guest/guest)
+
+## Next Steps
+
+1. Test the health endpoint: `http://localhost:8000/health` - Should return healthy status
+2. Test the leaderboard API: `http://localhost:8000/api/v1/leaderboard` - Should return leaderboard data
+3. Test the producer: Use the API at `http://localhost:8000/docs` to award points
+4. Check RabbitMQ: Go to `http://localhost:15672` (guest/guest) and look for `pods.events` exchange and `gamification.in` queue
+
+All RabbitMQ integration is complete and ready to use!
+
+=====================================================================================
+
+Now that your Gamification Service is running with RabbitMQ integration, here's what you can do next:
+
+1. Test Consumer (Receiving Events)
+A. Publish a Test Event from Events Service:
+
+   1.Open RabbitMQ Management UI: http://localhost:15672 (guest/guest)
+   2.Click on Exchanges tab
+   3.Click on pods.events exchange
+   4.Scroll down to Publish message section
+   5.Enter routing key: events.attendance.verified
+   6.Paste this JSON payload:
+
+    {
+  "eventId": "test-event-001",
+  "timestamp": "2025-01-31T12:00:00.000Z",
+  "correlationId": "test-001",
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "routingKey": "events.attendance.verified",
+  "payload": {
+    "eventId": "507f1f77bcf86cd799439020",
+    "memberId": "507f1f77bcf86cd799439012",
+    "registrationId": "507f1f77bcf86cd799439021",
+    "franchiseId": "507f1f77bcf86cd799439011",
+    "pointsEarned": 50,
+    "verifiedAt": "2025-02-15T15:35:00.000Z",
+    "verificationMethod": "qr_scan"
+  }
+}
+ 
+  7.Click Publish message
+
+B. Verify Consumer Processed the Event:
+
+Check the logs:
+
+
+   docker logs -f gamification-service
+
+
+Expected output:
+
+Processing event: events.attendance.verified
+Successfully processed event: events.attendance.verified
+
+C. Verify Points Were Created:
+
+Check the API:
+
+http://localhost:8000/api/v1/points/507f1f77bcf86cd799439012
+Expected response:
+
+{
+  "memberId": "507f1f77bcf86cd799439012",
+  "totalPoints": 50,
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "updatedAt": "2025-01-31T12:00:00.000Z"
+}
+
+_______________________________________
+
+2. Test Producer (Publishing Gamification Events)
+A. Award Points via API:
+
+   1.Open your browser and go to: http://localhost:8000/docs
+   2.Find the POST /api/v1/points/award endpoint
+   3.Click Try it out
+   4.Use this request body:
+
+{
+  "memberId": "507f1f77bcf86cd799439012",
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "amount": 100,
+  "source": "manual",
+  "sourceId": "test-manual-001",
+  "reason": "Test manual points award"
+}
+
+  5.Click Execute
+
+
+B. Verify Message Was Published to RabbitMQ:
+
+Check the logs:
+   
+   docker logs -f gamification-service
+
+Expected output:
+
+  Published gamification.points.awarded - Member: 507f1f77bcf86cd799439012, Amount: 100, Source: manual
+
+C. Check RabbitMQ Management UI:
+
+  1.Go to: http://localhost:15672 (guest/guest)
+  2.Click on Exchanges tab
+  3.Click on pods.events exchange
+  4.You should see the Message rate increasing
+________________________________________
+
+
+3. Verify Exchange and Queue in RabbitMQ Management UI
+A. Check Exchange Exists:
+
+  1.Go to: http://localhost:15672 (guest/guest)
+  2.Click on Exchanges tab
+  3.Look for exchange named: pods.events
+  4.Should show: Type: topic, Durable: true
+
+B. Check Queue Exists:
+
+  1.Click on Queues tab
+  2.Look for queue named: gamification.in
+  3.Should show: State: running
+  4.Click on the queue name
+  5.Look for Bindings section
+  6.Should show bindings to pods.events exchange with routing keys:
+     
+        .  events.attendance.verified
+	.  training.course.completed
+	 .  training.quiz.passed
+	 . training.module.completed
+________________________________
+
+4. Test Full Event Flow
+Events Service → Gamification Service → Notifications Service:
+
+  1.Publish events.attendance.verified from Events Service
+  2.Gamification Service consumes it → Awards points → Publishes gamification.points.awarded
+  3.Notifications Service would consume gamification.points.awarded → Send notification to user
+
+Training Service → Gamification Service → Notifications Service:
+
+  1.Publish training.course.completed from Training Service
+  2.Gamification Service consumes it → Awards points → Publishes gamification.points.awarded
+  3.Notifications Service would consume gamification.points.awarded → Send notification to use
+
+  ______________________________________
+
+
+Access Points
+API: http://localhost:8000
+API Docs: http://localhost:8000/docs
+Health Check: http://localhost:8000/health
+RabbitMQ Management: http://localhost:15672 (guest/guest) 
+
+
+
+
+
+
+
+
+
+
+
+idi ena kotdhi
+
+
+
+
+
+
+git checkout -b "feature/Gamification-RabbitMQ"
+
+
+git branch
+
+git log
+
+
+git status
+
+git add .
+
+git
+
+avunu disconnect chaii
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===================================
+Here are the 4 routing keys and their corresponding payloads for testing the gamification service:
+
+1. events.attendance.verified
+Routing Key: events.attendance.verified
+
+{
+  "eventId": "evt-001",
+  "timestamp": "2025-02-18T12:00:00.000Z",
+  "correlationId": "corr-001",
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "routingKey": "events.attendance.verified",
+  "payload": {
+    "eventId": "507f1f77bcf86cd799439020",
+    "memberId": "507f1f77bcf86cd799439012",
+    "registrationId": "507f1f77bcf86cd799439021",
+    "franchiseId": "507f1f77bcf86cd799439011",
+    "pointsEarned": 50,
+    "verifiedAt": "2025-02-18T15:35:00.000Z",
+    "verificationMethod": "qr_scan"
+  }
+}
+
+
+2. training.course.completed
+Routing Key: training.course.completed
+
+{
+  "eventId": "evt-002",
+  "timestamp": "2025-02-18T12:00:00.000Z",
+  "correlationId": "corr-002",
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "routingKey": "training.course.completed",
+  "payload": {
+    "courseId": "507f1f77bcf86cd799439030",
+    "enrollmentId": "507f1f77bcf86cd799439031",
+    "memberId": "507f1f77bcf86cd799439012",
+    "franchiseId": "507f1f77bcf86cd799439011",
+    "pointsEarned": 100,
+    "completedAt": "2025-02-18T10:00:00.000Z",
+    "courseTitle": "Safety & Compliance 2025"
+  }
+}
+
+3. training.quiz.passed
+Routing Key: training.quiz.passed
+
+{
+  "eventId": "evt-003",
+  "timestamp": "2025-02-18T12:00:00.000Z",
+  "correlationId": "corr-003",
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "routingKey": "training.quiz.passed",
+  "payload": {
+    "quizId": "507f1f77bcf86cd799439040",
+    "quizAttemptId": "507f1f77bcf86cd799439041",
+    "memberId": "507f1f77bcf86cd799439012",
+    "courseId": "507f1f77bcf86cd799439030",
+    "franchiseId": "507f1f77bcf86cd799439011",
+    "score": 85,
+    "pointsEarned": 25,
+    "passedAt": "2025-02-18T11:30:00.000Z"
+  }
+}
+
+
+4. training.module.completed
+Routing Key: training.module.completed
+
+{
+  "eventId": "evt-004",
+  "timestamp": "2025-02-18T12:00:00.000Z",
+  "correlationId": "corr-004",
+  "franchiseId": "507f1f77bcf86cd799439011",
+  "routingKey": "training.module.completed",
+  "payload": {
+    "enrollmentId": "507f1f77bcf86cd799439031",
+    "moduleId": "507f1f77bcf86cd799439050",
+    "memberId": "507f1f77bcf86cd799439012",
+    "courseId": "507f1f77bcf86cd799439030",
+    "franchiseId": "507f1f77bcf86cd799439011",
+    "progressPercent": 100,
+    "completedAt": "2025-02-18T09:00:00.000Z",
+    "pointsEarned": 10
+  }
+}
+
+
+Publishing Instructions:
+
+Exchange: pods.events
+Queue: gamification.in
+Use any of the above routing keys when publishing
+The gamification service will:
+
+Create points transactions
+Update member points
+Publish gamification.points.awarded events
+Check and award badges when applicable
+
+
+============================================================================================
+19-02-2026
+====================================================================================================
+
+Complete Step-by-Step Guide with Explanations
+
+
+🎯 What You'll Learn
+This guide will teach you:
+
+1.How to publish messages to RabbitMQ
+2.What happens when a message is sent
+3.How to monitor the consumer processing messages
+4.How to verify data in database and API
+5.All 4 event types with complete payloads
+
+
+PART 1: Understanding the Architecture
+
+📊 How the System Works
+
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   RabbitMQ  │──────>│   Consumer   │──────>│  MongoDB    │
+│   Exchange   │      │  (Python)    │      │  Database    │
+└─────────────┘      └──────────────┘      └─────────────┘
+       ↑                      ↓                        ↓
+    You publish           Processes              Stores
+    message here         message                 data
+                        ↓                        ↓
+                   ┌──────────┐            ┌─────────┐
+                   │   API    │<──────────│  Browser │
+                   │ (FastAPI)│            │  (You)   │
+                   └──────────┘            └─────────┘
+
+
+
+What Each Component Does:
+  1.RabbitMQ Exchange (pods.events): Receives messages and routes them to queues based on routing keys
+  2.Queue (gamification.in): Holds messages until consumer processes them
+  3.Consumer: Listens to queue, processes messages, awards points, checks for badges
+  4.MongoDB: Stores points transactions and member points
+  5.API: Lets you query points, transactions, leaderboard
+
+-------------------
+
+PART 2: Step-by-Step Testing Guide
+------------------------
+
+STEP 1: Open RabbitMQ Management UI
+
+What You're Doing:
+Opening the RabbitMQ web interface to manage and monitor message queues.
+
+Steps:
+  1. Open your web browser (Chrome, Firefox, Edge, etc.)
+  2.Type this URL in address bar:
+      http://localhost:15672
+  3.Press Enter to navigate to the page
+  4.You'll see a login page with username and password fields
+  5.Enter credentials:
+     Username: guest
+     Password: guest
+  6.Click the "Login" button
+
+What Happens:
+  . RabbitMQ authenticates you
+  . You'll see the RabbitMQ management dashboard
+  . You can now view exchanges, queues, connections, and publish messages
+
+----
+STEP 2: Navigate to Exchanges
+What You're Doing:
+Finding the exchange where you'll publish messages.
+
+Steps:
+  1.Look at the top navigation bar (you'll see tabs like: Overview, Connections, Channels, Exchanges, Queues, Admin)
+  2.Click on the "Exchanges" tab
+  3.You'll see a list of all exchanges in your RabbitMQ instance
+  4.Find the exchange named: pods.events
+  5.Click on the exchange name: pods.events
+
+What Happens:
+ . You're taken to the exchange details page
+ .You'll see information about the pods.events exchange
+ . You'll see a "Publish message" section at the bottom
+
+
+What is an Exchange?
+An exchange receives messages from publishers and routes them to queues based on routing keys. Think of it as a post office that sorts mail into different mailboxes (queues).
+
+-----
+STEP 3: Publish Your First Message (Event Attendance Verified)
+What You're Doing:
+Sending a test message to simulate that a member attended an event and should receive points.
+
+Steps:
+
+1. Scroll down to the "Publish message" section on the exchange page
+
+2. You'll see several input fields:
+
+  . Routing key
+  . Payload (large text area)
+  . Headers (optional)
+  . Properties (optional)
+
+3.Fill in the "Routing key" field:
+
+  events.attendance.verified
+
+(Click in the box and type exactly: events.attendance.verified)
+
+4.Fill in the "Payload" field with this complete JSON:
+
+{
+  "eventId": "evt_test_001",
+  "timestamp": "2026-02-19T10:00:00.000Z",
+  "correlationId": "corr_test_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "events.attendance.verified",
+  "payload": {
+    "eventId": "evt_test_001",
+    "memberId": "member_test_001",
+    "registrationId": "reg_test_001",
+    "franchiseId": "franchise_001",
+    "pointsEarned": 50,
+    "verifiedAt": "2026-02-19T10:00:00.000Z",
+    "verificationMethod": "QR_CODE"
+  }
+}
+
+5.Click the "Publish message" button (usually at the bottom of the section)
+
+What Happens Behind the Scenes:
+ 1.RabbitMQ receives your message from the web interface
+ 2.The exchange (pods.events) looks at the routing key: events.attendance.verified
+ 3.The exchange checks its bindings and finds that gamification.in queue is bound to this routing key
+  4.The message is routed to the gamification.in queue
+  5.The queue holds the message until a consumer picks it up
+  6.The consumer (running in the gamification-service container) sees the message in the queue
+  7.The consumer picks up the message and removes it from the queue
+  8.The consumer processes the message (awards points, checks for badges)
+
+What You Should See:
+  .A success message appears (often in green text)
+  .The message disappears from the queue (because consumer processed it)
+
+-----------
+
+STEP 4: Check the Queue
+What You're Doing:
+Verifying that the message was delivered to the queue and processed by the consumer.
+
+Steps:
+  1. Click on the "Queues" tab in the top navigation bar
+  2.You'll see a list of all queues
+  3.Find the queue named: gamification.in
+  4.Click on the queue name: gamification.in
+
+What You'll See:
+You'll see information about the queue including:
+
+ . Name: gamification.in
+ . State: Running
+ . Messages section:
+   . Ready: 0 (messages waiting to be processed)
+   . Unacked: 0 (messages being processed but not yet acknowledged)
+   . Total: Shows how many messages have been delivered
+
+What This Means:
+ .Ready = 0: The consumer picked up the message and processed it
+  . Unacked = 0: No messages are currently being processed
+  . Total: Shows the message was delivered (you might see a number like 1, 2, etc.)
+
+--------
+
+STEP 5: Watch the Consumer Logs
+What You're Doing:
+Monitoring the consumer in real-time to see it processing the message.
+
+Steps:
+
+  1. Open a new terminal/command prompt (keep the RabbitMQ UI open in your browser)
+  2. cd c:\Users\DELL\OneDrive\Documents\GitHub\pods-backend-services
+  3. Run this command to follow the logs in real-time:
+
+      docker logs gamification-service -f
+
+What This Command Does:
+  . docker logs: Shows logs from a Docker container
+  . gamification-service: The name of the container to get logs from
+  . -f: "Follow" mode - keeps showing new logs as they appear (like tail -f in Linux)
+
+What You'll See in the Logs:
+
+When the consumer processes your message, you'll see these log messages:
+ 
+Processing event: events.attendance.verified
+Processing attendance verified - Member: member_test_001, Event: evt_test_001, Points: 50
+Created points transaction: 69969d67ce3011d77a6b8c34
+Successfully processed event: events.attendance.verified
+
+What Each Log Message Means:
+1."Processing event: events.attendance.verified"
+
+ . The consumer received a message
+ . It identified the routing key as events.attendance.verified
+ . It's about to process this event
+
+2."Processing attendance verified - Member: member_test_001, Event: evt_test_001, Points: 50"
+
+  . The consumer is processing the event
+  . It shows which member gets points: member_test_001
+  . It shows which event triggered this: evt_test_001
+  . It shows how many points are awarded: 50
+  
+3."Created points transaction: 69969d67ce3011d77a6b8c34"
+
+  . A transaction record was created in MongoDB
+  . The ID 69969d67ce3011d77a6b8c34 is the MongoDB document ID
+  . This records that 50 points were awarded
+
+4."Successfully processed event: events.attendance.verified"
+
+  . The consumer finished processing the message
+  . No errors occurred
+ . The message was acknowledged to RabbitMQ
+
+If You See Errors:
+Error: "No handler found for routing key: X"
+
+  . Means: The routing key you used is not supported
+  . Solution: Use one of the 4 supported routing keys
+
+Error: "Validation error"
+
+  . Means: The message format is incorrect
+  . Solution: Check that franchiseId is at the top level of the JSON
+
+Error: "Failed to connect to RabbitMQ"
+
+  . Means: The consumer can't connect to RabbitMQ
+  . Solution: Check if RabbitMQ container is running
+
+------------------
+
+STEP 6: Verify in MongoDB (Points Transactions)
+What You're Doing:
+
+Checking that the points transaction was actually stored in the database.
+
+
+Steps:
+ 1.Open another new terminal (keep the logs terminal open)
+ 2.Run this command to query MongoDB
+
+docker exec mongodb mongosh --quiet leaderboard_db --eval "db.points_transactions.find({member_id: 'member_test_001'}).sort({created_at: -1}).limit(1).pretty()"
+
+What This Command Does:
+
+ . docker exec mongodb: Execute a command inside the MongoDB container
+ . mongosh: The MongoDB shell
+ . --quiet: Suppresses extra output, just shows the results
+ . leaderboard_db: The database name
+ . --eval: Execute a MongoDB query and exit
+ . db.points_transactions.find(...): Query the points_transactions collection
+ . {member_id: 'member_test_001'}: Find all transactions for this member
+ . .sort({created_at: -1}): Sort by creation date, newest first
+ . .limit(1): Only show the most recent transaction
+ . .pretty(): Format the output nicely for reading
+
+What You'll See:
+
+{
+  _id: ObjectId('69969d67ce3011d77a6b8c34'),
+  franchise_id: 'franchise_001',
+  member_id: 'member_test_001',
+  amount: 50,
+  source: 'event_attendance',
+  source_id: 'evt_test_001',
+  reason: 'Verified attendance at event QR_CODE',
+  created_at: ISODate('2026-02-19T05:19:35.777Z')
+}
+
+What Each Field Means:
+ . _id: The unique MongoDB document ID
+ . franchise_id: Which franchise/organization this belongs to
+ . member_id: Which member received the points
+ . amount: How many points were awarded (50 in this case)
+ . source: What type of activity earned the points (event_attendance)
+ . source_id: The ID of the event that triggered this
+ . reason: Human-readable description of why points were awarded
+ . created_at: When this transaction was created
+
+What This Proves:
+✅ The consumer successfully processed the message
+✅ The points transaction was stored in MongoDB
+✅ The data structure is correct
+✅ The system is working end-to-end
+
+-----
+
+STEP 7: Verify in MongoDB (Member Points)
+What You're Doing:
+Checking that the member's total points were updated correctly.
+
+Steps:
+ 1. In the same terminal, run this command:
+
+docker exec mongodb mongosh --quiet leaderboard_db --eval "db.member_points.find({member_id: 'member_test_001'}).pretty()"
+
+
+
+What This Command Does:
+ . Same as before, but queries the member_points collection
+ . This collection stores the total points for each member
+ . Shows the current total, not individual transactions
+
+What You'll See:
+ 
+{
+  _id: ObjectId('69969c19ce3011d77a6b8c31'),
+  franchise_id: 'franchise_001',
+  member_id: 'member_test_001',
+  total_points: 50,
+  updated_at: ISODate('2026-02-19T05:19:35.801Z')
+}
+
+What Each Field Means:
+ . _id: Unique MongoDB document ID
+ . franchise_id: Which franchise this member belongs to
+ . member_id: The member's unique identifier
+ . total_points: The sum of all points this member has earned (50 so far)
+ . updated_at: When this total was last updated
+
+What This Proves:
+✅ The consumer updated the member's total points
+✅ The total increased by 50 (the amount from the transaction)
+✅ The system is tracking points correctly
+--------------
+STEP 8: Verify via API
+What You're Doing:
+Using the REST API to query the points and verify they match what's in MongoDB.
+
+Steps:
+ 1.Open your web browser (or use curl in terminal)
+ 2.Type this URL in the address bar:
+http://localhost:8000/api/v1/points/member/franchise_001/member_test_001
+ 3.Press Enter to navigate to the endpoint
+
+What This URL Does:
+
+ . http://localhost:8000: Your gamification service API
+ . /api/v1: The API version
+ . /points/member: The points endpoint
+ . /franchise_001: The franchise ID (first parameter)
+ . /member_test_001: The member ID (second parameter)
+
+What You'll See:
+
+{
+  "id": "69969c19ce3011d77a6b8c31",
+  "franchise_id": "franchise_001",
+  "member_id": "member_test_001",
+  "total_points": 50,
+  "updated_at": "2026-02-19T05:19:35.801000"
+}
+
+
+What This Means:
+ . The API successfully queried MongoDB
+ . It returned the member's current points
+ . The total matches what we saw in MongoDB (50 points)
+ . The API is working correctly
+
+What This Proves:
+
+✅ The API endpoint is functional
+✅ The API can read from MongoDB
+✅ The data is consistent between database and API
+✅ Other services can query points via this API
+
+-------------------------------------------------------------
+
+PART 3: All Four Event Types with Complete Payloads
+
+Event Type 1: Event Attendance Verified
+
+When This Event Occurs:
+
+A member attends an event (workshop, seminar, training session, etc.) and their attendance is verified (via QR code, signature, etc.).
+
+Routing Key:
+
+events.attendance.verified
+
+Complete Payload:
+
+{
+  "eventId": "evt_test_001",
+  "timestamp": "2026-02-19T10:00:00.000Z",
+  "correlationId": "corr_test_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "events.attendance.verified",
+  "payload": {
+    "eventId": "evt_test_001",
+    "memberId": "member_test_001",
+    "registrationId": "reg_test_001",
+    "franchiseId": "franchise_001",
+    "pointsEarned": 50,
+    "verifiedAt": "2026-02-19T10:00:00.000Z",
+    "verificationMethod": "QR_CODE"
+  }
+}
+
+What Happens:
+ i. Consumer receives the message
+ ii. Creates a points transaction for 50 points
+ iii. Updates member's total points (+50)
+ iv. Checks if this is the member's first event attendance
+ v. If first event, awards "First Event" badge
+ vi. Publishes gamification.points.awarded event to RabbitMQ
+
+Points Awarded: 50
+Badge Eligibility: First Event badge (if first attendance)
+
+
+------
+
+Event Type 2: Training Course Completed
+When This Event Occurs:
+A member completes an entire training course (all modules, quizzes, etc.).
+
+Routing Key:
+
+training.course.completed
+Complete Payload:
+
+
+{
+  "eventId": "evt_test_002",
+  "timestamp": "2026-02-19T10:05:00.000Z",
+  "correlationId": "corr_test_002",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.course.completed",
+  "payload": {
+    "franchiseId": "franchise_001",
+    "memberId": "member_test_001",
+    "courseId": "course_001",
+    "enrollmentId": "enroll_001",
+    "courseTitle": "Safety Training 2026",
+    "pointsEarned": 100,
+    "completedAt": "2026-02-19T10:05:00.000Z"
+  }
+}
+
+What Happens:
+ 1.Consumer receives the message
+ 2.Creates a points transaction for 100 points
+ 3.Updates member's total points (+100)
+ 4.Checks if this is the member's first course completion
+ 5.If first course, awards "First Course Complete" badge
+ 6.Publishes gamification.points.awarded event to RabbitMQ
+
+Points Awarded: 100
+Badge Eligibility: First Course Complete badge (if first course)
+
+--------
+
+
+Event Type 3: Training Quiz Passed
+When This Event Occurs:
+A member passes a quiz within a training course.
+
+Routing Key:
+training.quiz.passed
+
+Complete Payload:
+
+{
+  "eventId": "evt_test_003",
+  "timestamp": "2026-02-19T10:10:00.000Z",
+  "correlationId": "corr_test_003",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.quiz.passed",
+  "payload": {
+    "franchiseId": "franchise_001",
+    "memberId": "member_test_001",
+    "quizId": "quiz_001",
+    "quizAttemptId": "attempt_001",
+    "courseId": "course_001",
+    "score": 85,
+    "pointsEarned": 25,
+    "passedAt": "2026-02-19T10:10:00.000Z"
+  }
+}
+
+What Happens:
+ 1.Consumer receives the message
+ 2.Creates a points transaction for 25 points
+ 3.Updates member's total points (+25)
+ 4.Checks for quiz-related badges
+ 5.Publishes gamification.points.awarded event to RabbitMQ
+
+Points Awarded: 25
+Badge Eligibility: Quiz-related badges (based on score/completions)
+
+
+------------
+
+Event Type 4: Training Module Completed
+When This Event Occurs:
+A member completes a single module within a training course.
+
+Routing Key:
+
+training.module.completed
+
+Complete Payload:
+
+{
+  "eventId": "evt_test_004",
+  "timestamp": "2026-02-19T10:15:00.000Z",
+  "correlationId": "corr_test_004",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.module.completed",
+  "payload": {
+    "franchiseId": "franchise_001",
+    "memberId": "member_test_001",
+    "courseId": "course_001",
+    "enrollmentId": "enroll_001",
+    "moduleId": "module_001",
+    "progressPercent": 100,
+    "pointsEarned": 10,
+    "completedAt": "2026-02-19T10:15:00.000Z"
+  }
+}
+
+What Happens:
+ 1.Consumer receives the message
+ 2.Creates a points transaction for 10 points (if pointsEarned > 0)
+ 3.Updates member's total points (+10)
+ 4.Checks for module streak badges (e.g., completed 3 modules in a row)
+ 5.Publishes gamification.points.awarded event to RabbitMQ (if points awarded)
+
+Points Awarded: 10 (if pointsEarned > 0)
+Badge Eligibility: Module streak badges (e.g., 3 in a row)
+
+-----
+
+PART 4: Testing All Event Types
+
+Test All 4 Events in Sequence
+
+Step 1: Publish Event Attendance (50 points)
+
+Use the payload from "Event Type 1" above
+Routing key: events.attendance.verified
+Watch logs: "Processing attendance verified"
+Check API: Total should be 50
+
+Step 2: Publish Quiz Passed (25 points)
+
+Use the payload from "Event Type 3" above
+Routing key: training.quiz.passed
+Watch logs: "Processing quiz passed"
+Check API: Total should be 75 (50 + 25)
+
+Step 3: Publish Module Completed (10 points)
+
+Use the payload from "Event Type 4" above
+Routing key: training.module.completed
+Watch logs: "Processing module completed"
+Check API: Total should be 85 (75 + 10)
+
+Step 4: Publish Course Completed (100 points)
+
+Use the payload from "Event Type 2" above
+Routing key: training.course.completed
+Watch logs: "Processing course completed"
+Check API: Total should be 185 (85 + 100)
+
+------------
+
+PART 5: Checking Leaderboard
+
+What You're Doing:
+Seeing where your member ranks on the leaderboard compared to other members.
+
+Steps:
+ 1.Open your web browser
+ 2.Type this URL:
+http://localhost:8000/api/v1/leaderboard?franchise_id=franchise_001
+
+3. Press Enter
+
+What You'll See:
+
+{
+  "franchise_id": "franchise_001",
+  "members": [
+    {
+      "member_id": "member_test_001",
+      "total_points": 185,
+      "rank": 1
+    },
+    {
+      "member_id": "other_member_002",
+      "total_points": 150,
+      "rank": 2
+    }
+  ],
+  "total_members": 2
+}
+
+What This Means:
+Your member (member_test_001) has 185 points
+They are ranked #1 in the franchise
+There are 2 total members in the leaderboard
+---------------------
+
+PART 6: Quick Reference Commands
+
+RabbitMQ Management
+
+ . URL: http://localhost:15672
+ . Username: guest
+ . Password: guest
+
+Docker Commands
+
+# Watch logs in real-time
+docker logs gamification-service -f
+
+# Check all containers
+docker ps
+
+# Check queue status
+docker exec rabbitmq rabbitmqctl list_queues
+
+# Check exchange bindings
+docker exec rabbitmq rabbitmqctl list_bindings
+
+
+MongoDB Commands
+# Check recent transactions
+docker exec mongodb mongosh --quiet leaderboard_db --eval "db.points_transactions.find({member_id: 'member_test_001'}).sort({created_at: -1}).limit(5).pretty()"
+
+# Check member points
+docker exec mongodb mongosh --quiet leaderboard_db --eval "db.member_points.find({member_id: 'member_test_001'}).pretty()"
+
+# Check all members in leaderboard
+docker exec mongodb mongosh --quiet leaderboard_db --eval "db.member_points.find().sort({total_points: -1}).limit(10).pretty()"
+API Endpoints
+# Get member points
+http://localhost:8000/api/v1/points/member/{franchise_id}/{member_id}
+
+# Get member transactions
+http://localhost:8000/api/v1/points/transactions/{franchise_id}/{member_id}
+
+# Get leaderboard
+http://localhost:8000/api/v1/leaderboard?franchise_id={franchise_id}
+
+# API documentation (Swagger UI)
+http://localhost:8000/docs
+
+---------------
+
+PART 7: Troubleshooting
+Problem: "Validation error: franchiseId Field required"
+Cause: You forgot to put franchiseId at the top level of the JSON.
+
+Solution: Make sure your JSON has franchiseId at the top level, not just inside payload:
+
+❌ Wrong:
+
+{
+  "eventId": "...",
+  "payload": {
+    "franchiseId": "..."  // Only in payload
+  }
+}
+✅ Correct:
+
+{
+  "eventId": "...",
+  "franchiseId": "...",  // At top level
+  "payload": {
+    "franchiseId": "..."  // Also in payload
+  }
+}
+
+
+
+Problem: "No handler found for routing key"
+Cause: You used a routing key that doesn't exist.
+
+Solution: Use one of these 4 routing keys:
+
+ . events.attendance.verified
+ . training.course.completed
+ . training.quiz.passed
+ . training.module.completed
+
+Problem: Queue has messages but not being processed
+Cause: Consumer is not running or not connected to RabbitMQ.
+
+Solution:
+
+Check if container is running: docker ps
+Check logs for errors: docker logs gamification-service
+Restart if needed: docker-compose restart gamification-service
+
+Problem: Points not increasing in API
+Cause: Message was processed but points weren't updated.
+
+Solution:
+
+Check MongoDB directly (Step 6 and 7)
+Check logs for errors
+Verify the pointsEarned value is > 0 in the payload
+
+--------------
+END: Summary
+You now have a complete understanding of:
+
+✅ How to publish messages to RabbitMQ
+✅ What happens when a message is sent
+✅ How to monitor consumer logs
+✅ How to verify data in MongoDB
+✅ How to query via API
+✅ All 4 event types with complete payloads
+✅ How to check the leaderboard
+Follow the steps in order and you'll see the complete message flow from RabbitMQ → Consumer → Database → API!
+
+
+
+RabbitMQ:
+
+http://localhost:15672/#/
+
+
+
+-----================================
+
+terminal:
+docker-compose up -d --build   
+--path(C:\Users\DELL\OneDrive\Documents\GitHub\pods-backend-services\gamification-service>)
+cd ..
+docker logs gamification-service -f     ---logs
+(PS C:\Users\DELL\OneDrive\Documents\GitHub\pods-backend-services>)
+
+
+=========================================
+20-02-2026
+
+# 4 Routing Keys and Test Payloads
+
+This document provides 4 complete test payloads for all routing keys supported by the gamification service.
+
+---
+
+## 📋 Routing Keys Overview
+
+The gamification service consumer listens for these 4 routing keys:
+
+1. **`events.attendance.verified`** - Event attendance verification
+2. **`training.course.completed`** - Course completion
+3. **`training.quiz.passed`** - Quiz passed
+4. **`training.module.completed`** - Module completion
+
+---
+
+## 1️⃣ Routing Key: `events.attendance.verified`
+
+**Description:** Award points when a member's event attendance is verified
+
+**Points Awarded:** 50 points
+
+**Test Payload:**
+```json
+{
+  "eventId": "evt_attendance_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_attendance_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "events.attendance.verified",
+  "payload": {
+    "eventId": "evt_attendance_001",
+    "memberId": "member_attendance_001",
+    "registrationId": "reg_attendance_001",
+    "franchiseId": "franchise_001",
+    "pointsEarned": 50,
+    "verifiedAt": "2026-02-20T14:00:00.000Z",
+    "verificationMethod": "QR_CODE"
+  }
+}
+```
+
+**Required Fields:**
+- `eventId` - Unique event identifier
+- `memberId` - Member who attended
+- `registrationId` - Registration ID (used for idempotency)
+- `franchiseId` - Franchise ID
+- `pointsEarned` - Points to award (typically 50)
+- `verifiedAt` - When attendance was verified
+- `verificationMethod` - How verified (QR_CODE, MANUAL, etc.)
+
+**Expected Behavior:**
+- Creates points transaction for 50 points
+- Updates member's total points
+- Checks for badge eligibility
+- Idempotency key: `attendance:{registrationId}`
+
+---
+
+## 2️⃣ Routing Key: `training.course.completed`
+
+**Description:** Award points when a member completes a training course
+
+**Points Awarded:** 100 points
+
+**Test Payload:**
+```json
+{
+  "eventId": "evt_course_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_course_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.course.completed",
+  "payload": {
+    "eventId": "evt_course_001",
+    "memberId": "member_course_001",
+    "enrollmentId": "enroll_course_001",
+    "franchiseId": "franchise_001",
+    "courseId": "course_001",
+    "courseName": "Advanced Leadership Training",
+    "pointsEarned": 100,
+    "completedAt": "2026-02-20T14:00:00.000Z",
+    "completionPercentage": 100
+  }
+}
+```
+
+**Required Fields:**
+- `eventId` - Unique event identifier
+- `memberId` - Member who completed course
+- `enrollmentId` - Enrollment ID (used for idempotency)
+- `franchiseId` - Franchise ID
+- `courseId` - Course identifier
+- `courseName` - Course name
+- `pointsEarned` - Points to award (typically 100)
+- `completedAt` - When course was completed
+- `completionPercentage` - Completion percentage (should be 100)
+
+**Expected Behavior:**
+- Creates points transaction for 100 points
+- Updates member's total points
+- Checks for badge eligibility
+- Idempotency key: `course_completed:{enrollmentId}`
+
+---
+
+## 3️⃣ Routing Key: `training.quiz.passed`
+
+**Description:** Award points when a member passes a training quiz
+
+**Points Awarded:** 25 points
+
+**Test Payload:**
+```json
+{
+  "eventId": "evt_quiz_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_quiz_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.quiz.passed",
+  "payload": {
+    "eventId": "evt_quiz_001",
+    "memberId": "member_quiz_001",
+    "quizAttemptId": "attempt_quiz_001",
+    "franchiseId": "franchise_001",
+    "quizId": "quiz_001",
+    "quizName": "Leadership Fundamentals Quiz",
+    "memberId": "member_quiz_001",
+    "pointsEarned": 25,
+    "passedAt": "2026-02-20T14:00:00.000Z",
+    "score": 85,
+    "passingScore": 70
+  }
+}
+```
+
+**Required Fields:**
+- `eventId` - Unique event identifier
+- `memberId` - Member who passed quiz
+- `quizAttemptId` - Quiz attempt ID (used for idempotency if available)
+- `franchiseId` - Franchise ID
+- `quizId` - Quiz identifier
+- `quizName` - Quiz name
+- `pointsEarned` - Points to award (typically 25)
+- `passedAt` - When quiz was passed
+- `score` - Member's score
+- `passingScore` - Minimum passing score
+
+**Expected Behavior:**
+- Creates points transaction for 25 points
+- Updates member's total points
+- Checks for badge eligibility
+- Idempotency key: `quiz_passed:{quizAttemptId}` or `quiz_passed:{memberId}:{quizId}`
+
+---
+
+## 4️⃣ Routing Key: `training.module.completed`
+
+**Description:** Award points when a member completes a training module
+
+**Points Awarded:** 10 points
+
+**Test Payload:**
+```json
+{
+  "eventId": "evt_module_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_module_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.module.completed",
+  "payload": {
+    "eventId": "evt_module_001",
+    "memberId": "member_module_001",
+    "enrollmentId": "enroll_module_001",
+    "franchiseId": "franchise_001",
+    "moduleId": "module_001",
+    "moduleName": "Module 1: Introduction",
+    "pointsEarned": 10,
+    "completedAt": "2026-02-20T14:00:00.000Z",
+    "completionPercentage": 100
+  }
+}
+```
+
+**Required Fields:**
+- `eventId` - Unique event identifier
+- `memberId` - Member who completed module
+- `enrollmentId` - Enrollment ID (used for idempotency)
+- `franchiseId` - Franchise ID
+- `moduleId` - Module identifier
+- `moduleName` - Module name
+- `pointsEarned` - Points to award (typically 10)
+- `completedAt` - When module was completed
+- `completionPercentage` - Completion percentage (should be 100)
+
+**Expected Behavior:**
+- Creates points transaction for 10 points
+- Updates member's total points
+- Checks for badge eligibility
+- Idempotency key: `module_completed:{enrollmentId}:{moduleId}`
+
+---
+
+## 📊 Points Summary
+
+| Routing Key | Points | Description |
+|-------------|--------|-------------|
+| `events.attendance.verified` | 50 | Event attendance verified |
+| `training.course.completed` | 100 | Course completed |
+| `training.quiz.passed` | 25 | Quiz passed |
+| `training.module.completed` | 10 | Module completed |
+
+**Total possible points per member:** 185 points (one of each event type)
+
+---
+
+## 🧪 Testing All 4 Routing Keys
+
+### Test Sequence
+
+1. **Test 1: Attendance Verified**
+   - Routing Key: `events.attendance.verified`
+   - Expected: +50 points
+
+2. **Test 2: Course Completed**
+   - Routing Key: `training.course.completed`
+   - Expected: +100 points (total: 150)
+
+3. **Test 3: Quiz Passed**
+   - Routing Key: `training.quiz.passed`
+   - Expected: +25 points (total: 175)
+
+4. **Test 4: Module Completed**
+   - Routing Key: `training.module.completed`
+   - Expected: +10 points (total: 185)
+
+### Verification After Each Test
+
+Check MongoDB:
+```powershell
+docker exec mongodb mongosh --quiet leaderboard_db --eval "db.points_transactions.find().sort({createdAt: -1}).limit(1).pretty()"
+```
+
+Check API:
+```powershell
+curl http://localhost:8000/api/v1/points/member/franchise_001/<memberId>
+```
+
+---
+
+## 🔁 Idempotency Testing
+
+### Test Duplicate Messages
+
+After publishing each message, publish the **same message again** with the same:
+- `registrationId` for attendance
+- `enrollmentId` for course
+- `quizAttemptId` for quiz
+- `enrollmentId` + `moduleId` for module
+
+**Expected Behavior:**
+- Queue states should still show: Ready: 1 → Ready: 0, Unacked: 1 → Ready: 0, Unacked: 0
+- Service logs should show: "Duplicate event detected, skipping"
+- Points should NOT increase
+
+This proves idempotency is working correctly!
+
+---
+
+## 🎯 Complete Test Checklist
+
+Use this checklist to test all 4 routing keys:
+
+### Test 1: Attendance Verified
+- [ ] Routing Key: `events.attendance.verified`
+- [ ] STAGE 1: Ready: 1, Unacked: 0, Total: 1
+- [ ] STAGE 2: Ready: 0, Unacked: 1, Total: 1
+- [ ] STAGE 3: Ready: 0, Unacked: 0, Total: 0
+- [ ] Logs show: "Creating transaction for member: member_attendance_001, amount: 50"
+- [ ] MongoDB has transaction
+- [ ] API shows: totalPoints = 50
+- [ ] Duplicate test: Points don't increase
+
+### Test 2: Course Completed
+- [ ] Routing Key: `training.course.completed`
+- [ ] STAGE 1: Ready: 1, Unacked: 0, Total: 1
+- [ ] STAGE 2: Ready: 0, Unacked: 1, Total: 1
+- [ ] STAGE 3: Ready: 0, Unacked: 0, Total: 0
+- [ ] Logs show: "Creating transaction for member: member_course_001, amount: 100"
+- [ ] MongoDB has transaction
+- [ ] API shows: totalPoints = 150 (50 + 100)
+- [ ] Duplicate test: Points don't increase
+
+### Test 3: Quiz Passed
+- [ ] Routing Key: `training.quiz.passed`
+- [ ] STAGE 1: Ready: 1, Unacked: 0, Total: 1
+- [ ] STAGE 2: Ready: 0, Unacked: 1, Total: 1
+- [ ] STAGE 3: Ready: 0, Unacked: 0, Total: 0
+- [ ] Logs show: "Creating transaction for member: member_quiz_001, amount: 25"
+- [ ] MongoDB has transaction
+- [ ] API shows: totalPoints = 175 (50 + 100 + 25)
+- [ ] Duplicate test: Points don't increase
+
+### Test 4: Module Completed
+- [ ] Routing Key: `training.module.completed`
+- [ ] STAGE 1: Ready: 1, Unacked: 0, Total: 1
+- [ ] STAGE 2: Ready: 0, Unacked: 1, Total: 1
+- [ ] STAGE 3: Ready: 0, Unacked: 0, Total: 0
+- [ ] Logs show: "Creating transaction for member: member_module_001, amount: 10"
+- [ ] MongoDB has transaction
+- [ ] API shows: totalPoints = 185 (50 + 100 + 25 + 10)
+- [ ] Duplicate test: Points don't increase
+
+---
+
+## 🚀 Quick Copy-Paste Ready
+
+### Test 1: Attendance
+```
+Routing Key: events.attendance.verified
+
+Payload:
+{
+  "eventId": "evt_attendance_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_attendance_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "events.attendance.verified",
+  "payload": {
+    "eventId": "evt_attendance_001",
+    "memberId": "member_attendance_001",
+    "registrationId": "reg_attendance_001",
+    "franchiseId": "franchise_001",
+    "pointsEarned": 50,
+    "verifiedAt": "2026-02-20T14:00:00.000Z",
+    "verificationMethod": "QR_CODE"
+  }
+}
+```
+
+### Test 2: Course
+```
+Routing Key: training.course.completed
+
+Payload:
+{
+  "eventId": "evt_course_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_course_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.course.completed",
+  "payload": {
+    "eventId": "evt_course_001",
+    "memberId": "member_course_001",
+    "enrollmentId": "enroll_course_001",
+    "franchiseId": "franchise_001",
+    "courseId": "course_001",
+    "courseName": "Advanced Leadership Training",
+    "pointsEarned": 100,
+    "completedAt": "2026-02-20T14:00:00.000Z",
+    "completionPercentage": 100
+  }
+}
+```
+
+### Test 3: Quiz
+```
+Routing Key: training.quiz.passed
+
+Payload:
+{
+  "eventId": "evt_quiz_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_quiz_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.quiz.passed",
+  "payload": {
+    "eventId": "evt_quiz_001",
+    "memberId": "member_quiz_001",
+    "quizAttemptId": "attempt_quiz_001",
+    "franchiseId": "franchise_001",
+    "quizId": "quiz_001",
+    "quizName": "Leadership Fundamentals Quiz",
+    "memberId": "member_quiz_001",
+    "pointsEarned": 25,
+    "passedAt": "2026-02-20T14:00:00.000Z",
+    "score": 85,
+    "passingScore": 70
+  }
+}
+```
+
+### Test 4: Module
+```
+Routing Key: training.module.completed
+
+Payload:
+{
+  "eventId": "evt_module_001",
+  "timestamp": "2026-02-20T14:00:00.000Z",
+  "correlationId": "corr_module_001",
+  "franchiseId": "franchise_001",
+  "routingKey": "training.module.completed",
+  "payload": {
+    "eventId": "evt_module_001",
+    "memberId": "member_module_001",
+    "enrollmentId": "enroll_module_001",
+    "franchiseId": "franchise_001",
+    "moduleId": "module_001",
+    "moduleName": "Module 1: Introduction",
+    "pointsEarned": 10,
+    "completedAt": "2026-02-20T14:00:00.000Z",
+    "completionPercentage": 100
+  }
+}
+```
+
+---
+
+**Happy testing! 🎉**
+
+
+===========================
+
+cd c:/Users/DELL/OneDrive/Documents/GitHub/pods-backend-services
+.\simple_status_check.ps1
+
+
+.\check_all_status.ps1
+
+
+cd c:/Users/DELL/OneDrive/Documents/GitHub/pods-backend-services
+.\check_all_status.ps1
+
+-----
+.\check_all_status.ps1
+
+.\publish_all_test_messages.ps1
+
+
+For detailed logs, run:
+
+----docker logs gamification-service
+
+
+For database queries, run:
+docker exec mongodb mongosh leaderboard_db
+
+======================================
+
+
+FINAL_CORRECT_PAYLOADS_V2.md:
+
+
+
+
+
+
